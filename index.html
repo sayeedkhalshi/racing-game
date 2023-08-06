@@ -98,20 +98,24 @@
             user-select: none;
             transition: opacity 10s;
         }
+       
         #road{
             transition: opacity 2s;
             transition-timing-function: steps(8, end);
         }
+       
         #road * {
             position: absolute;
             image-rendering: pixelated;
         }
+        
         #hero{
             background-repeat: no-repeat;
             background-position: -110px 0;
             z-index: 2000;
             transform: scale(1,4);
         }
+        
         #cloud{
             background-size: auto 100%;
             width: 100%;
@@ -124,6 +128,7 @@
             height: 100%;
 
         }
+       
         #home{
             position: absolute;
             color: #fff;
@@ -131,6 +136,7 @@
             height: 100%;
             z-index: 1000%; /* need this cause clip-path change tack context*/
         }
+        
         #highscore{
             position: absolute; 
             width: 100%;
@@ -139,32 +145,39 @@
             column-count: 3;
             column-fill: auto;
         }
+       
         #highscore * {
             color: #9e95a8;
             margin: 0 0 6px 27px;
         }
+        
         h1{
             position: absolute;
             left:50%;
             top: 25%;
             transform: translate(-50%, -50%);
             font-size: 5em;
+            
             background: -webkit-linear-gradient( #25d8b1, #e2bbf0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        
         #text{
             position: absolute;
             text-shadow: 0 0 black, 0 2px black, 2px 0 black, 0 0 black;
         }
+        
         .blink{
             animation: blinker 2s steps(4,end) infinite;
         }
+        
         @keyframes blinker{
             50%{
                 opacity: 0;
             }
         }
+        
         #controls {
             color: #868686;
             font-size: 13px;
@@ -172,16 +185,19 @@
             margin: 10px;
             text-align: center;
         }
+        
         #controls > span{
             margin-left: 20px;
         }
-#controls > span > span{
+
+        #controls > span > span{
     border: 2px solid #868686;
     border-radius: 5px;
     padding: 7px;
     margin: right 10px;
     display: inline-block;
 }
+
 #controls >span:last-child >span{
     transform: rotate(90deg);
 }
@@ -285,6 +301,7 @@
         Number.prototype.pad = function (numZeros, char = 0){
             let n = Math.abs(this);
             let zeros = math.max(0, numZeros - Math.floor(n).toString().length);
+            let zeroString = Math.pow(10, zeros)
             .toString()
             .substr(1)
             .replace(0, char);
@@ -295,7 +312,7 @@
         };
 
         const timestamp =(_) => new Date().getTime();
-        const accelerate = (v.accel, dt) => v + accel * dt;
+        const accelerate = (v, accel, dt) => v + accel * dt;
         const isCollide = (x1, w1, x2, w2) => (x1 - x2) ** 2 <= (w2 + w1) ** 2;
 
         function getRand(min, max){
@@ -318,6 +335,59 @@
             let leftOffset  = w1 + x2 -x1 + Math.abs(w2 / 2 - w1 / 2);
             element.style.clipPahth = 'polygon(${leftOffset}px 0, ${leftOffset + w2 }px 0, 66.66% 100%, 33.33% 100%)';
         }
+
+        //keys
+
+        const KEYS ={};
+        const keyUpdate = (e) =>{
+            KEYS[e.code] = e.type === 'keydown';
+            e.preventDefault();
+        }
+        addEventListener('keydown', keyUpdate);
+        addEventListener('keyup', keyUpdate);
+
+
+        function sleep(ms) {
+            return new Promuise(function(resolve, reject) {
+                setTimeout((_) => resolve(),ms);
+            });
+        }
+
+        //objects
+
+        class LIne{
+            constractor() {
+                this.x = 0;
+                this.y = 0;
+                this.z = 0;
+
+                this.X=0;
+                this,Y=0;
+                this.W=0;
+
+                this.curve = 0;
+                this.scale = 0;
+
+                this.elements = [];
+                this.special = null;
+            }
+
+            project(camX, camY, camZ) {
+                this.scale = camD / (this.z - camZ);
+                this.X = (1 + this.scale * (this.x -camX)) * halfWidth;
+                this.Y = Math.ceil((1 - this.scale * (this.Y - camY)) * height);
+                this.W = this.scale * roadW * halfWidth;
+                
+            }
+
+            clearSprites() {
+                for (let e of this.elements) e.style.background = "transparent";
+            }
+
+            drawSprite(depth, layer)
+        }
+
+
         </script>
         
     </body>
