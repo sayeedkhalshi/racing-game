@@ -248,7 +248,7 @@
         </div>
 
         <script src="javascript/1.js"></script>
-        <script id=""rendered-js>
+        <script id="rendered-js">
             //assets
 
             const ASSETS ={
@@ -259,42 +259,42 @@
                 },
                 IMAGE:{
 
-                TREE:{
-                    src: "/home/ahnaf/Downloads/tree.png",
-                    width: 132,
-                    height: 192,
+                    TREE:{
+                        src: "/home/ahnaf/Downloads/tree.png",
+                        width: 132,
+                        height: 192,
+                    },
+                    HERO:{
+                        src: "/home/ahnaf/Downloads/hero.png",
+                        width: 110,
+                        height: 56,
+                    },
+                    CAR:{
+                        src: "/home/ahnaf/Downloads/car04.png",
+                        width: 50,
+                        height: 36
+                    },
+                    FINISH:{
+                        src: "/home/ahnaf/Downloads/finish.png",
+                        width: 339,
+                        height: 180,
+                        offset: -0.5
+                    },
+                    SKY:{
+                        src: "/home/ahnaf/Downloads/cloud.jpg",
+                
+                    },
                 },
-                HERO:{
-                    src: "/home/ahnaf/Downloads/hero.png",
-                    width: 110,
-                    height: 56,
-                },
-                CAR:{
-                    src: "/home/ahnaf/Downloads/car04.png",
-                    width: 50,
-                    height: 36
-                },
-                FINISH:{
-                    src: "/home/ahnaf/Downloads/finish.png",
-                    width: 339,
-                    height: 180,
-                    offset: -0.5
-                },
-                SKY:{
-                    src: "/home/ahnaf/Downloads/cloud.jpg",
-            
-                },
-            },
-            AUDIO:{
-                theme:
-                  "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/theme.mp3",
-                engine:
-                   "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/engine.wav",
-                honk: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/honk.wav",
-                beep: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/beep.wav",
-            },
+                AUDIO:{
+                    theme:
+                    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/theme.mp3",
+                    engine:
+                    "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/engine.wav",
+                    honk: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/honk.wav",
+                    beep: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/155629/beep.wav",
+                },      
 
-        };
+            };
         
         // HELPER FUNCTION
 
@@ -394,8 +394,8 @@
                 destY += destH * -1;
 
                 let obj = layer instanceof Element ? layer : this.elements[layer + 6];
-                obj.style.background = 'url('${sprite.src}') no-repeat';
-                obj.style.backgroundSize = '${destW}px ${destH}px';
+                obj.style.background = `url('${sprite.src}') no-repeat`;
+                obj.style.backgroundSize = `${destW}px ${destH}px`;
                 obj.style.left = destX + 'px';
                 obj.style.top = destY + 'px';
                 obj.style.width = destW + 'px';
@@ -438,7 +438,7 @@
                 source.start(0);
                 });
             }
-        }
+        
 
         get volume(){
             return this.destination.gain.value;
@@ -457,6 +457,7 @@
                 source.start(0);
 
             }else this.load(key, () => this.play(key));
+        }
 
             load(src, key, callback){
                 let _self = this;
@@ -475,7 +476,8 @@
                 };
                 request.send();
             }
-        }
+        
+    }
 
         //global variables
 
