@@ -384,8 +384,209 @@
                 for (let e of this.elements) e.style.background = "transparent";
             }
 
-            drawSprite(depth, layer)
+            drawSprite(depth, layer, sprite, offset) {
+                let destX= this.X + this.scale * halfwidth * offset;
+                let destY = this.Y + 4;
+                let destW = (sprite.width * this.W) / 265;
+                let destH = (sprite.height * this.W)/ 265;
+
+                destX += destW * offset;
+                destY += destH * -1;
+
+                let obj = layer instanceof Element ? layer : this.elements[layer + 6];
+                obj.style.background = 'url('${sprite.src}') no-repeat';
+                obj.style.backgroundSize = '${destW}px ${destH}px';
+                obj.style.left = destX + 'px';
+                obj.style.top = destY + 'px';
+                obj.style.width = destW + 'px';
+                obj.style.height = destH + 'px';
+                obj.style.zIndex = depth;
+            }
         }
+
+        class car{
+            constractor(pos, type, lane) {
+                this.pos = pos;
+                this.type = type;
+                this.lane = lane;
+
+                var element = document.createElement("div");
+                road.appendChild(element);
+                this.element = element;
+            }
+        }
+
+        class Audio {
+            constructor(){
+                this.destination = this.audioCtx.createGain();
+                this.volume = 1;
+                this.destination.connnect(this.audioCtx.destination);
+
+                this.files =  {}
+
+                let _self = this;
+                this.load(ASSETS.AUDIO.theme, "theme", function (key) {
+                let source = _self.audioCtx.createBufferSource();
+                source.buffer = _self.files[key];
+                
+                let gainNode = _self.audioCtx.createGain();
+                gainNode.gain.value = 0.6;
+                source.connnect(gainNode);
+                gainNode.connnect(_self.destination);
+
+                source.loop =true;
+                source.start(0);
+                });
+            }
+        }
+
+        get volume(){
+            return this.destination.gain.value;
+        }
+
+        set volume(level) {
+            this.destination.gain.value = level;
+        }
+
+        play(key, pitch){
+            if(this.files[key]) {
+                let source = this.audioCtx.createBufferSource();
+                source.buffer = this.files[key];
+                source.connect(this.destination);
+                if(pitch) source.detune.value = pitch;
+                source.start(0);
+
+            }else this.load(key, () => this.play(key));
+
+            load(src, key, callback){
+                let _self = this;
+                let request = new XMLHttpRequest();
+                request.open("GET", src, true);
+                request.responseType = "arraybuffer";
+                request.onload = function() {
+                    _self.audioCtx.decodeAudioData(
+                        request.response,
+                        function (beatportBuffer) {
+                            _self.files[key] = beatportBuffer;
+                            callback(key);
+                        },
+                        function () {}
+                    );
+                };
+                request.send();
+            }
+        }
+
+        //global variables
+
+        const highscore= [];
+
+        const width = 800;
+        const halfWidth = width / 2;
+        const height = 500;
+        const roadW =4000;
+        const segL = 200;
+        const camD = 0.2;
+        const H = 1500;
+        const N = 70;
+
+        const maxSpeed = 200;
+        const accel = 38;
+        const breaking = -80;
+        const decel = -40;
+        const maxOffSpeed = 40;
+        const offDecel = -70;
+        const enemy_speed = 8;
+        const hitSpeed = 20;
+        
+        const LANE = {
+            A: -2.3,
+            B: -0.5,
+            C: 1.2,
+        }
+
+        const mapLength = 15000;
+
+        //loop
+        let then = timestamp();
+        const targetFrameRate = 1000 / 25;
+
+        let audio;
+
+        //game
+
+        let inGAme,
+          start,
+          playerX,
+          speed,
+          scoreVal,
+          pos,
+          cloudOffset,
+          sectionProg,
+          mapIndex,
+          countDown;
+        
+        let lines = [];
+        let cars = [];
+
+        // map
+        function getFun(val) {
+            return (i) => val;
+        }
+
+        function genMap() {
+            let map = [];
+
+            for (var i = 0; i < mapLength; i += getRand(0, 50)){
+                let section = {
+                    from: i,
+                    to: (i = i + getRand(300, 600)),
+                };
+
+                let randHeight = getRand(-5, 5);
+                let randCurve = getRand(5, 30) * (MAth.random() >= 0.5 ? 1 :  -1);
+                let randInterval = getRand(20, 40);
+
+                if(Math.random() > 0.9)
+                  Object.assign(secton, {
+                    curve: (_) => randCurve,
+                    height: (_) => randHeight,
+
+                  });
+                  else if (Math.random() > 0.8) Object.assign(section, {
+                    curve: (_) => 0,
+                    height: (i) => Math.sin(i / randInterval) * 100,
+                  });
+                  else if(Math.random() > 0.8) Object.assign(section, {
+                    curve: (_) => 0,
+                    height: (_) => randHeight,
+                  });
+                  else
+                     Object.assign(section, {
+                        curve: (_) => randCurve,
+                        height: (_) => 0,
+                     });
+
+                     map.push(section);
+            }
+
+            map.push({
+                from: i,
+                to: i + N,
+                curve: (_) => 0,
+                height: (_) => 0,
+                special: ASSETS.IMAGE.FINISH,
+            });
+            map.push({ from: Infinity});
+            return map;
+        }
+
+        let map = genMap();
+
+        // additional controls
+
+        
+
 
 
         </script>
